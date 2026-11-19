@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Application.Features.Registrations.CreateRegistration;
 using Api.Features.Registrations.CreateRegistration;
+using Application.Features.Registrations.GetRegistrations;
+using Api.Features.Registrations.GetRegistrations;
+using Application.Features.Registrations.GetRegistrationById;
+using Api.Features.Registrations.GetRegistrationById;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,9 +22,9 @@ builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options => options.Us
 builder.Services.AddValidatorsFromAssembly(typeof(IAppDbContext).Assembly);
 
 // Handlers
-// builder.Services.AddScoped<ICommandHandler<TCommand, Result<TResponse>>, TCommandHandler>();
-// builder.Services.AddScoped<IQueryHandler<TQuery, Result<TResponse>>, TQueryHandler>();
 builder.Services.AddScoped<ICommandHandler<CreateRegistrationCommand, Result<CreateRegistrationResponse>>,CreateRegistrationHandler>();
+builder.Services.AddScoped<IQueryHandler<GetRegistrationsQuery, Result<GetRegistrationsResponse>>,GetRegistrationsHandler>();
+builder.Services.AddScoped<IQueryHandler<GetRegistrationByIdQuery, Result<GetRegistrationByIdResponse>>,GetRegistrationByIdHandler>();
 
 // API
 builder.Services.AddEndpointsApiExplorer();
@@ -58,6 +62,8 @@ app.MapGet("/", () => "Welcome to the Car Show 2027 Registration API! Go to /sca
 
 // Map endpoints
 app.MapGroup("/api/registrations")
-    .MapCreateRegistrationEndpoints();
+    .MapCreateRegistrationEndpoints()
+    .MapGetRegistrationsEndpoints()
+    .MapGetRegistrationByIdEndpoints();
 
 app.Run();
