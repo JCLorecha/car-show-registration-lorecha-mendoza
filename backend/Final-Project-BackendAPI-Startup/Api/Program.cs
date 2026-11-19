@@ -1,10 +1,13 @@
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
+using Application.Features.Registrations.CreateRegistration;
 using Domain.Common;
 using FluentValidation;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using Application.Features.Registrations.CreateRegistration;
+using Api.Features.Registrations.CreateRegistration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,7 @@ builder.Services.AddValidatorsFromAssembly(typeof(IAppDbContext).Assembly);
 // Handlers
 // builder.Services.AddScoped<ICommandHandler<TCommand, Result<TResponse>>, TCommandHandler>();
 // builder.Services.AddScoped<IQueryHandler<TQuery, Result<TResponse>>, TQueryHandler>();
+builder.Services.AddScoped<ICommandHandler<CreateRegistrationCommand, Result<CreateRegistrationResponse>>,CreateRegistrationHandler>();
 
 // API
 builder.Services.AddEndpointsApiExplorer();
@@ -53,6 +57,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => "Welcome to the Car Show 2027 Registration API! Go to /scalar/v1 for API documentation.");
 
 // Map endpoints
-// app.Map{FeatureGroup}Endpoints();
+app.MapGroup("/api/registrations")
+    .MapCreateRegistrationEndpoints();
 
 app.Run();
