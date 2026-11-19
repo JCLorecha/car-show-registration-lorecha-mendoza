@@ -12,6 +12,8 @@ using Application.Features.Registrations.GetRegistrations;
 using Api.Features.Registrations.GetRegistrations;
 using Application.Features.Registrations.GetRegistrationById;
 using Api.Features.Registrations.GetRegistrationById;
+using Application.Features.Registrations.GetRegistrationSummary;
+using Api.Features.Registrations.GetRegistrationSummary;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,7 @@ builder.Services.AddValidatorsFromAssembly(typeof(IAppDbContext).Assembly);
 builder.Services.AddScoped<ICommandHandler<CreateRegistrationCommand, Result<CreateRegistrationResponse>>,CreateRegistrationHandler>();
 builder.Services.AddScoped<IQueryHandler<GetRegistrationsQuery, Result<GetRegistrationsResponse>>,GetRegistrationsHandler>();
 builder.Services.AddScoped<IQueryHandler<GetRegistrationByIdQuery, Result<GetRegistrationByIdResponse>>,GetRegistrationByIdHandler>();
+builder.Services.AddScoped<IQueryHandler<GetRegistrationSummaryQuery, Result<GetRegistrationSummaryResponse>>,GetRegistrationSummaryHandler>();
 
 // API
 builder.Services.AddEndpointsApiExplorer();
@@ -64,6 +67,7 @@ app.MapGet("/", () => "Welcome to the Car Show 2027 Registration API! Go to /sca
 app.MapGroup("/api/registrations")
     .MapCreateRegistrationEndpoints()
     .MapGetRegistrationsEndpoints()
-    .MapGetRegistrationByIdEndpoints();
+    .MapGetRegistrationByIdEndpoints()
+    .MapGetRegistrationSummaryEndpoints();
 
 app.Run();
