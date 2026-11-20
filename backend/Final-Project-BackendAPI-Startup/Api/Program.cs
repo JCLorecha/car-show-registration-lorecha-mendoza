@@ -1,24 +1,31 @@
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
 using Application.Features.Registrations.CreateRegistration;
+using Application.Features.Registrations.GetRegistrations;
+using Application.Features.Registrations.GetRegistrationById;
+using Application.Features.Registrations.GetRegistrationSummary;
+using Api.Features.Registrations.CreateRegistration;
+using Api.Features.Registrations.GetRegistrations;
+using Api.Features.Registrations.GetRegistrationById;
+using Api.Features.Registrations.GetRegistrationSummary;
 using Domain.Common;
 using FluentValidation;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using Application.Features.Registrations.CreateRegistration;
-using Api.Features.Registrations.CreateRegistration;
-using Application.Features.Registrations.GetRegistrations;
-using Api.Features.Registrations.GetRegistrations;
-using Application.Features.Registrations.GetRegistrationById;
-using Api.Features.Registrations.GetRegistrationById;
-using Application.Features.Registrations.GetRegistrationSummary;
-using Api.Features.Registrations.GetRegistrationSummary;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
 // Database - SQLite
-builder.Services.AddDbContext<IAppDbContext, AppDbContext>(options => options.UseSqlite("Data Source=carshow.db"));
+builder.Services.AddDbContext<IAppDbContext, AppDbContext>(
+    options => options.UseSqlite("Data Source=carshow.db"));
+
 
 // Validators
 builder.Services.AddValidatorsFromAssembly(typeof(IAppDbContext).Assembly);
@@ -31,6 +38,7 @@ builder.Services.AddScoped<IQueryHandler<GetRegistrationSummaryQuery, Result<Get
 
 // API
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, _, _) =>
@@ -43,14 +51,14 @@ builder.Services.AddOpenApi(options =>
 
 var app = builder.Build();
 
-// Seed data
+// Initialize database and seed data
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    // dbContext.<Entities>.AddRange(...);
+    await dbContext.Database.EnsureCreatedAsync();
 
-    dbContext.SaveChanges();
+    await RegistrationSeeder.SeedAsync(dbContext);
 }
 
 // Configure the HTTP request pipeline
@@ -61,7 +69,8 @@ if (app.Environment.IsDevelopment())
 }
 
 // Root endpoint
-app.MapGet("/", () => "Welcome to the Car Show 2027 Registration API! Go to /scalar/v1 for API documentation.");
+app.MapGet("/", () =>
+    "Welcome to the Car Show 2027 Registration API! Go to /scalar/v1 for API documentation.");
 
 // Map endpoints
 app.MapGroup("/api/registrations")
