@@ -3,7 +3,7 @@ import KpiCards from '../components/KpiCards.jsx';
 import RegistrationFilters from '../components/RegistrationFilters.jsx';
 import RegistrationTable from '../components/RegistrationTable.jsx';
 import Pagination from '../components/Pagination.jsx';
-import { getRegistrations, getSummary } from '../api/sample-data.js';
+import { getRegistrations, getSummary } from '../api/registrationsApi.js';
 
 const php = new Intl.NumberFormat('en-PH', {
   style: 'currency',
@@ -152,7 +152,7 @@ export default function RegistrationsPage() {
   );
 
   const settingsView = (
-    <section className="max-w-3xl rounded-xl border border-zinc-800 bg-zinc-900 p-5"><h2 className="text-sm font-semibold text-white">System Configuration</h2><div className="mt-5 divide-y divide-zinc-800"><div className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-medium text-slate-200">Data Source Mode</p><p className="mt-1 text-xs text-slate-500">Active dashboard data provider</p></div><span className="w-fit rounded-md border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300">Sample Data</span></div><div className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-medium text-slate-200">API Base URL</p><p className="mt-1 break-all text-xs text-slate-500">{apiBaseUrl || 'Not configured'}</p></div><span className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-1.5 text-xs text-slate-400">C# API Ready</span></div></div></section>
+    <section className="max-w-3xl rounded-xl border border-zinc-800 bg-zinc-900 p-5"><h2 className="text-sm font-semibold text-white">System Configuration</h2><div className="mt-5 divide-y divide-zinc-800"><div className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-medium text-slate-200">Data Source Mode</p><p className="mt-1 text-xs text-slate-500">Active dashboard data provider</p></div><span className="w-fit rounded-md border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300">Live C# API</span></div><div className="flex flex-col gap-2 py-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-medium text-slate-200">API Base URL</p><p className="mt-1 break-all text-xs text-slate-500">{apiBaseUrl || 'Not configured'}</p></div><span className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-1.5 text-xs text-slate-400">Connected</span></div></div></section>
   );
 
   return (
